@@ -46,3 +46,20 @@ describe("/api", () => {
         })
     })
 })
+
+describe("/api/articles/:article_id", () => {
+    test("GET 200: responds with an article object with the correct properties", () => {
+        return request(app)
+        .get("/api/articles/5")
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article.title).toBe("UNCOVERED: catspiracy to bring down democracy");
+            expect(article.topic).toBe("cats");
+            expect(article.author).toBe("rogersop");
+            expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!");
+            expect(article.created_at).toBe("2020-08-03T13:14:00.000Z");
+            expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+        })
+    })    
+})
