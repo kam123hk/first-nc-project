@@ -21,7 +21,15 @@ describe("/api/topics", () => {
             })
         })
     });
-    // test("GET 404: ", () => {
+});
 
-    // })
+describe("*", () => {
+    test("404: responds with message path not found with an endpoint that does not exist", () => {
+        return request(app)
+        .get("/api/topics!")
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('path not found');
+        })
+    })
 })

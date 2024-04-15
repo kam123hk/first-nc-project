@@ -4,9 +4,8 @@ const {getTopics} = require('./controllers/topics.controller');
 
 app.get("/api/topics", getTopics);
 
-app.use((error, req, res, next) => {
-    console.log('error  here')
-    res.status(400).send(error);
+app.all("*", (req, res, next) => {
+    res.status(404).send({message: "path not found"});
 })
 
 module.exports = app;
