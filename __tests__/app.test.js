@@ -119,5 +119,14 @@ describe("/api/articles", () => {
                 expect(article.body).toBe(undefined);
             })
         })
+    });
+    test("GET 200: responds with articles sorted by date in descending order", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({body}) => {            
+            const {articles} = body;
+            expect(articles).toBeSortedBy("created_at", {descending: true});
+        })
     })
 })
