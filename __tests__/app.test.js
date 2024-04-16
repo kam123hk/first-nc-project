@@ -128,5 +128,5 @@ describe("/api/articles", () => {
             const {articles} = body;
             expect(articles).toBeSortedBy("created_at", {descending: true});
         })
-    })
+    });
 })

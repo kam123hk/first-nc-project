@@ -28,12 +28,7 @@ async function selectArticles(sort_by='created_at') {
     ELSE SUM(comments.votes)::INTEGER END AS votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`
     sqlQueryString += ` ORDER BY ${sort_by} DESC;`
     try {
-        const articles = await db.query(sqlQueryString
-        // `
-        // SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, CASE WHEN SUM(comments.votes) IS NULL THEN 0 
-        // ELSE SUM(comments.votes)::INTEGER END AS votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id;
-        // `
-    );
+        const articles = await db.query(sqlQueryString);
         return articles.rows;
     } catch(error) {
         throw error;
