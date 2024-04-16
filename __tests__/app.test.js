@@ -106,8 +106,8 @@ describe("/api/articles", () => {
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
-            expect(articles.length).toBe(5);
-            articles.forEach(article => {
+            expect(articles.length).toBe(13);
+            articles.forEach(article => {                
                 expect(typeof article.author).toBe('string');
                 expect(typeof article.title).toBe('string');
                 expect(typeof article.article_id).toBe('number');
