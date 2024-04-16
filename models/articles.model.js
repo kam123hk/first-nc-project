@@ -35,5 +35,27 @@ async function selectArticles(sort_by='created_at') {
     }
 }
 
+async function selectCommentsByArticleId(id) {
+    try {
+        const comments = await db.query(`
+        SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC;`, [id]);
+        return comments.rows;
+    } catch (error) {
+        // throw error
+    }
+}
 
-module.exports = {selectArticleById, selectArticles};
+async function checkArticleIdExists(id) {
+    try {
+        const article = await db.query(`
+        SELECT * FROM articles WHERE article_id=$1`, [id]);
+        if (article.rows.length === 0) {
+            return Promise.reject({status: 404, message: 'article not found'})
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+
+module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists};

@@ -1,4 +1,4 @@
-const {selectArticleById, selectArticles} = require('../models/articles.model');
+const {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists} = require('../models/articles.model');
 
 
 async function getArticleById(req, res, next) {
@@ -21,4 +21,15 @@ async function getArticles(req, res, next) {
     }
 }
 
-module.exports = {getArticleById, getArticles}
+async function getCommentsByArticleId(req, res, next) {
+    const {article_id} = req.params;
+    try {
+        await checkArticleIdExists(article_id);
+        const comments = await selectCommentsByArticleId(article_id);
+        res.status(200).send({comments});
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = {getArticleById, getArticles, getCommentsByArticleId}
