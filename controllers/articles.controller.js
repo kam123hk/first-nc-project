@@ -7,7 +7,7 @@ async function getArticleById(req, res, next) {
         const article = await selectArticleById(article_id);
         res.status(200).send({article})
     } catch(error) {
-        next(error)
+        next(error);
     }
 }
 
