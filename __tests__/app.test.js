@@ -183,4 +183,63 @@ describe("/api/articles/:article_id/comments", () => {
             expect(body.message).toBe('bad request');
         })
     });
+    test("POST 201: responds with the posted comment", () => {
+        const postedComment = {
+        username: 'lurker',
+        body: 'Love to lurk, just love it.'
+       };
+       return request(app)
+       .post("/api/articles/9/comments")
+       .send(postedComment)
+       .expect(201)
+       .then(({body}) => {
+            const {comment} = body;
+            const timeInMS = Date.now();
+            console.log(Date.parse(comment.created_at), '<-comment time')
+            expect(comment.comment_id).toBe(19);
+            expect(comment.body).toBe('Love to lurk, just love it.');
+            expect(comment.article_id).toBe(9);
+            expect(comment.author).toBe('lurker');
+            expect(comment.votes).toBe(0)
+            expect(typeof comment.created_at).toBe('string');
+            expect(Date.parse(comment.created_at)).toBeLessThanOrEqual(timeInMS);
+            expect(Date.parse(comment.created_at)).toBeGreaterThan(timeInMS - 5000);
+       })
+    });
+    test("POST 400: responds with an error message bad request when article_id is not an integer", () => {
+        const postedComment = {
+            username: 'lurker',
+            body: 'Love to lurk, just love it.'
+           };
+        return request(app)
+        .post("/api/articles/not_a_valid_article_id/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("POST 404: responds with an error message not found when article_id is an integer but does not exist in database", () => {
+        const postedComment = {
+            username: 'lurker',
+            body: 'Love to lurk, just love it.'
+           };
+        return request(app)
+        .post("/api/articles/20/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('article not found');
+        })
+    });
+    test("POST 404: responds with an error message not found when username does not exist in database", () => {
+        const postedComment = {
+            username: 123,
+            body: 123
+           };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('user not found');
+        })
+    });
 })

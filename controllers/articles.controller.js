@@ -1,4 +1,4 @@
-const {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists} = require('../models/articles.model');
+const {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId} = require('../models/articles.model');
 
 
 async function getArticleById(req, res, next) {
@@ -32,4 +32,17 @@ async function getCommentsByArticleId(req, res, next) {
     }
 }
 
-module.exports = {getArticleById, getArticles, getCommentsByArticleId}
+async function postCommentByArticleId(req, res, next) {
+    const {username, body} = req.body;
+    const {article_id} = req.params;
+    try {
+        await checkArticleIdExists(article_id);
+        const comment = await insertCommentByArticleId(username, body, article_id);
+        res.status(201).send({comment});
+    } catch (error) {
+        // can do logic for psql constraints in app.use if user does not exist?
+        next(error)
+    }
+}
+
+module.exports = {getArticleById, getArticles, getCommentsByArticleId, postCommentByArticleId}

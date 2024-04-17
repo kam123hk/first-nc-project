@@ -41,7 +41,7 @@ async function selectCommentsByArticleId(id) {
         SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC;`, [id]);
         return comments.rows;
     } catch (error) {
-        // throw error
+        throw error
     }
 }
 
@@ -57,5 +57,17 @@ async function checkArticleIdExists(id) {
     }
 }
 
+async function insertCommentByArticleId(username, body, id) {
+    try {
+        const comment = await db.query(`
+        INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *;
+        `, [body, username, id]);
+        return comment.rows[0];
+    } catch (error) {
+        // some logic to separate psql constraints can be written in controller?
+        throw error
+    }
+}
 
-module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists};
+
+module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId};
