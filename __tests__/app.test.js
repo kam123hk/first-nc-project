@@ -96,13 +96,37 @@ describe("/api/articles/:article_id", () => {
             expect(body.message).toBe('article not found')
         })
     });
-    // "/api/articles/" endpoint returns 'path not found' but should this go under 'bad request'?
+
+    // 200
+// 204 - success but no change?
+// 400 - bad request (invalid)
+// 404 - not found
+
+    test("PATCH 200: responds with the patched article object", () => {
+        const patchedVote = {inc_votes: 2}
+        return request(app)
+        .patch("/api/articles/5")
+        .send(patchedVote)
+        .expect(200)        
+        .then(({body}) => {            
+            const {article} = body;
+            expect(article.article_id).toBe(5);
+            expect(article.title).toBe("UNCOVERED: catspiracy to bring down democracy");
+            expect(article.topic).toBe("cats");
+            expect(article.author).toBe("rogersop");
+            expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!");
+            expect(article.created_at).toBe("2020-08-03T13:14:00.000Z");
+            expect(article.votes).toBe(2);
+            expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+        })
+    });
+
 })
 
 describe("/api/articles", () => {
     test("GET 200: responds with an array of all articles without the body property", () => {
         return request(app)
-        .get("/api/articles")
+        .get("/api/articles/")
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
