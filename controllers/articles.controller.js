@@ -54,10 +54,11 @@ async function patchArticleById(req, res, next) {
     const {inc_votes} = req.body;
     const {article_id} = req.params;
     try {
+        await checkArticleIdExists(article_id);
         const article = await updateArticleById(inc_votes, article_id)
         res.status(200).send({article})
     } catch (error) {
-        
+        next(error);
     }
 }
 

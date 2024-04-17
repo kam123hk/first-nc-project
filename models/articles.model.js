@@ -66,13 +66,16 @@ async function insertCommentByArticleId(username, body, id) {
 
 async function updateArticleById(votes, id) {
     try {
+        if (votes === undefined) {
+            return Promise.reject({status: 400, message: 'bad request'})
+        }
         const article = await db.query(
         `UPDATE articles SET votes=votes+$1
         WHERE article_id=$2
         RETURNING*;`, [votes, id]);
         return article.rows[0];
     } catch (error) {
-        
+        throw error;
     }
 }
 
