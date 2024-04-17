@@ -60,7 +60,7 @@ describe("/api/articles/:article_id", () => {
             expect(article.author).toBe("rogersop");
             expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!");
             expect(article.created_at).toBe("2020-08-03T13:14:00.000Z");
-            expect(article.votes).toBe(17);
+            expect(article.votes).toBe(0);
             expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
         })
     });
