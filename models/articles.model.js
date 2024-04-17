@@ -4,11 +4,7 @@ const db = require("../db/connection");
 async function selectArticleById(id) {
     try {
         const article = await db.query(`
-        SELECT articles.author, articles.title, articles.article_id, articles.body, articles.topic, articles.created_at,
-        CASE WHEN SUM(comments.votes) IS NULL THEN 0 
-        ELSE SUM(comments.votes)::INTEGER END AS votes,
-        articles.article_img_url FROM articles LEFT OUTER JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id=$1
-        GROUP BY articles.article_id;`, [id]);
+        SELECT author, title, article_id, body, topic, articles.created_at, votes, article_img_url FROM articles WHERE article_id=$1;`, [id]);
         if (article.rows.length === 0) {
             return Promise.reject({status:404, message:'article not found'})
         }
@@ -68,5 +64,20 @@ async function insertCommentByArticleId(username, body, id) {
     }
 }
 
+async function updateArticleById(votes, id) {
+    try {
+        if (votes === undefined) {
+            return Promise.reject({status: 400, message: 'bad request'})
+        }
+        const article = await db.query(
+        `UPDATE articles SET votes=votes+$1
+        WHERE article_id=$2
+        RETURNING*;`, [votes, id]);
+        return article.rows[0];
+    } catch (error) {
+        throw error;
+    }
+}
 
-module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId};
+
+module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId, updateArticleById};

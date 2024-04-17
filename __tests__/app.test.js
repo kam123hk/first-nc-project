@@ -60,7 +60,7 @@ describe("/api/articles/:article_id", () => {
             expect(article.author).toBe("rogersop");
             expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!");
             expect(article.created_at).toBe("2020-08-03T13:14:00.000Z");
-            expect(article.votes).toBe(17);
+            expect(article.votes).toBe(0);
             expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
         })
     });
@@ -96,13 +96,73 @@ describe("/api/articles/:article_id", () => {
             expect(body.message).toBe('article not found')
         })
     });
-    // "/api/articles/" endpoint returns 'path not found' but should this go under 'bad request'?
+
+    test("PATCH 200: responds with the patched article object", () => {
+        const patchedVote = {inc_votes: 2}
+        return request(app)
+        .patch("/api/articles/5")
+        .send(patchedVote)
+        .expect(200)        
+        .then(({body}) => {
+            const {article} = body;
+            expect(article.article_id).toBe(5);
+            expect(article.title).toBe("UNCOVERED: catspiracy to bring down democracy");
+            expect(article.topic).toBe("cats");
+            expect(article.author).toBe("rogersop");
+            expect(article.body).toBe("Bastet walks amongst us, and the cats are taking arms!");
+            expect(article.created_at).toBe("2020-08-03T13:14:00.000Z");
+            expect(article.votes).toBe(2);
+            expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+        })
+    });
+    test("GET 404: responds with error message not found when article_id is a number but does not exist", () => {
+        const patchedVote = {inc_votes: 2};
+        return request(app)
+        .patch("/api/articles/109")
+        .send(patchedVote)
+        .expect(404)        
+        .then(({body}) => {
+            expect(body.message).toBe('article not found');
+        })
+    });
+    test("GET 400: responds with error message bad request when article_id is invalid", () => {
+        const patchedVote = {inc_votes: 2};
+        return request(app)
+        .patch("/api/articles/not_an_article")
+        .send(patchedVote)
+        .expect(400)
+        .then(({body}) => {    
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("Patch 400: responds with error message bad request for invalid inc_votes property", () => {
+        const patchedVote = {inc_votes: 'string'}
+        return request(app)
+        .patch("/api/articles/5")
+        .send(patchedVote)
+        .expect(400)        
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("POST 400: responds with an error message bad request when the comment object has incorrect or missing keys", () => {
+        const patchedVote = {wrongKey: 2, anotherKey: -5};
+        return request(app)
+        .patch("/api/articles/5")
+        .send(patchedVote)
+        .expect(400)        
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+
+
 })
 
 describe("/api/articles", () => {
     test("GET 200: responds with an array of all articles without the body property", () => {
         return request(app)
-        .get("/api/articles")
+        .get("/api/articles/")
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
