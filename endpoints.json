@@ -104,5 +104,10 @@
         "comment_count": 6
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "serves no content and status code 204 after given comment is deleted",
+    "queries": [],
+    "exampleResponse": null
   }
 }
