@@ -64,7 +64,6 @@ async function insertCommentByArticleId(username, body, id) {
         `, [body, username, id]);
         return comment.rows[0];
     } catch (error) {
-        // some logic to separate psql constraints can be written in controller?
         throw error
     }
 }

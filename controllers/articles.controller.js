@@ -33,14 +33,19 @@ async function getCommentsByArticleId(req, res, next) {
 }
 
 async function postCommentByArticleId(req, res, next) {
-    const {username, body} = req.body;
+    
+    const {username, body} = req.body;    
     const {article_id} = req.params;
+
     try {
+        if (!username || !body) {
+            throw {status: 400, message: 'bad request'};
+        }
+
         await checkArticleIdExists(article_id);
         const comment = await insertCommentByArticleId(username, body, article_id);
         res.status(201).send({comment});
     } catch (error) {
-        // can do logic for psql constraints in app.use if user does not exist?
         next(error)
     }
 }

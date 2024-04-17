@@ -70,8 +70,12 @@
   "POST /api/articles/:article_id/comments": {
     "description": "serves the posted comment as an object with comment properties",
     "queries": [],
+    "exampleRequest": {
+      "username": "lurker",
+      "body": "Love to lurk, just love it."
+     },
     "exampleResponse": {
-      "article": 
+      "comment": 
       {
         "comment_id": 19,
         "body": "Love to lurk, just love it.",

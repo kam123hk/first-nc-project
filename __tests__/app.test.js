@@ -195,7 +195,6 @@ describe("/api/articles/:article_id/comments", () => {
        .then(({body}) => {
             const {comment} = body;
             const timeInMS = Date.now();
-            console.log(Date.parse(comment.created_at), '<-comment time')
             expect(comment.comment_id).toBe(19);
             expect(comment.body).toBe('Love to lurk, just love it.');
             expect(comment.article_id).toBe(9);
@@ -240,6 +239,19 @@ describe("/api/articles/:article_id/comments", () => {
         .send(postedComment)
         .then(({body}) => {
             expect(body.message).toBe('user not found');
+        })
+    });
+    test("POST 400: responds with an error message bad request when the comment object has incorrect or missing keys", () => {
+        const postedComment = {
+            username:'butter_bridge',
+            wrongKey: 'yolo',
+            superfluousKey: 23
+           };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
         })
     });
 })

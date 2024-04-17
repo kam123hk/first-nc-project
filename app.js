@@ -30,6 +30,7 @@ app.use((error, req, res, next) => {
     if (error.code === '22P02') {
         res.status(400).send({message: 'bad request'});
     }
+    // can add the ${user} from the constraints key if handling more 23503 errors from other sources of foreign key mishap
     if (error.code === '23503') {
         res.status(404).send({message: 'user not found'});
     }
