@@ -27,7 +27,7 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description": "serves an array of all articles",
+    "description": "serves an object with article properties",
     "queries": [],
     "exampleResponse": {
       "article": 
@@ -41,5 +41,49 @@
           "comment_count": 6
         }
     }
-  }  
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments that have the given article id",
+    "queries": [],
+    "exampleResponse": {
+      "comments": 
+      [
+        {
+          "comment_id": 11,
+          "body": "Ambidextrous marsupial",
+          "article_id": 3,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2020-09-19T23:10:00.000Z"
+        },
+        {
+          "comment_id": 10,
+          "body": "git push origin master",
+          "article_id": 3,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": "2020-06-20T07:24:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "serves the posted comment as an object with comment properties",
+    "queries": [],
+    "exampleRequest": {
+      "username": "lurker",
+      "body": "Love to lurk, just love it."
+     },
+    "exampleResponse": {
+      "comment": 
+      {
+        "comment_id": 19,
+        "body": "Love to lurk, just love it.",
+        "article_id": 9,
+        "author": "lurker",
+        "votes": 0,
+        "created_at": "2024-04-16T22:47:19.592Z"
+      } 
+    }
+  }
 }

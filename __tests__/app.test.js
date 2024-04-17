@@ -130,3 +130,128 @@ describe("/api/articles", () => {
         })
     });
 })
+
+describe("/api/articles/:article_id/comments", () => {
+    test("GET 200: responds with an array of comments for the article_id where each comment has the correct properties", () => {
+        return request(app)
+        .get("/api/articles/3/comments")
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments.length).toBe(2);            
+            comments.forEach(comment => {
+                expect(typeof comment.comment_id).toBe('number');
+                expect(typeof comment.votes).toBe('number');
+                expect(typeof comment.created_at).toBe('string');
+                expect(typeof comment.author).toBe('string');
+                expect(typeof comment.body).toBe('string');
+                expect(typeof comment.article_id).toBe('number');
+            })
+        })
+    });
+    test("GET 200: responds with an array of comments in date descending order", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({body}) => {   
+            const {comments} = body;
+            expect(comments).toBeSortedBy("created_at", {descending: true});
+        })
+    });
+    test("GET 200: responds with empty array when article_id exists but is not in comments", () => {
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({body}) => {   
+            const {comments} = body;   
+            expect(comments.length).toBe(0);
+        })
+    });
+    test("GET 404: responds with error message not found when article_id is a number but does not exist", () => {
+        return request(app)
+        .get("/api/articles/9999/comments")
+        .expect(404)
+        .then(({body}) => { 
+            expect(body.message).toBe('article not found');
+        })
+    });
+    test("GET 400: responds with error message bad request when article_id is invalid", () => {
+        return request(app)
+        .get("/api/articles/not_an_article/comments")
+        .expect(400)
+        .then(({body}) => {    
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("POST 201: responds with the posted comment", () => {
+        const postedComment = {
+        username: 'lurker',
+        body: 'Love to lurk, just love it.'
+       };
+       return request(app)
+       .post("/api/articles/9/comments")
+       .send(postedComment)
+       .expect(201)
+       .then(({body}) => {
+            const {comment} = body;
+            const timeInMS = Date.now();
+            expect(comment.comment_id).toBe(19);
+            expect(comment.body).toBe('Love to lurk, just love it.');
+            expect(comment.article_id).toBe(9);
+            expect(comment.author).toBe('lurker');
+            expect(comment.votes).toBe(0)
+            expect(typeof comment.created_at).toBe('string');
+            expect(Date.parse(comment.created_at)).toBeLessThanOrEqual(timeInMS);
+            expect(Date.parse(comment.created_at)).toBeGreaterThan(timeInMS - 5000);
+       })
+    });
+    test("POST 400: responds with an error message bad request when article_id is not an integer", () => {
+        const postedComment = {
+            username: 'lurker',
+            body: 'Love to lurk, just love it.'
+           };
+        return request(app)
+        .post("/api/articles/not_a_valid_article_id/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("POST 404: responds with an error message not found when article_id is an integer but does not exist in database", () => {
+        const postedComment = {
+            username: 'lurker',
+            body: 'Love to lurk, just love it.'
+           };
+        return request(app)
+        .post("/api/articles/20/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('article not found');
+        })
+    });
+    test("POST 404: responds with an error message not found when username does not exist in database", () => {
+        const postedComment = {
+            username: 123,
+            body: 123
+           };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('user not found');
+        })
+    });
+    test("POST 400: responds with an error message bad request when the comment object has incorrect or missing keys", () => {
+        const postedComment = {
+            username:'butter_bridge',
+            wrongKey: 'yolo',
+            superfluousKey: 23
+           };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(postedComment)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+})

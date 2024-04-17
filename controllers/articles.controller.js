@@ -1,4 +1,4 @@
-const {selectArticleById, selectArticles} = require('../models/articles.model');
+const {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId} = require('../models/articles.model');
 
 
 async function getArticleById(req, res, next) {
@@ -21,4 +21,33 @@ async function getArticles(req, res, next) {
     }
 }
 
-module.exports = {getArticleById, getArticles}
+async function getCommentsByArticleId(req, res, next) {
+    const {article_id} = req.params;
+    try {
+        await checkArticleIdExists(article_id);
+        const comments = await selectCommentsByArticleId(article_id);
+        res.status(200).send({comments});
+    } catch (error) {
+        next(error);
+    }
+}
+
+async function postCommentByArticleId(req, res, next) {
+    
+    const {username, body} = req.body;    
+    const {article_id} = req.params;
+
+    try {
+        if (!username || !body) {
+            throw {status: 400, message: 'bad request'};
+        }
+
+        await checkArticleIdExists(article_id);
+        const comment = await insertCommentByArticleId(username, body, article_id);
+        res.status(201).send({comment});
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = {getArticleById, getArticles, getCommentsByArticleId, postCommentByArticleId}
