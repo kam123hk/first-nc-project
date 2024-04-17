@@ -38,10 +38,6 @@ async function postCommentByArticleId(req, res, next) {
     const {article_id} = req.params;
 
     try {
-        if (!username || !body) {
-            throw {status: 400, message: 'bad request'};
-        }
-
         await checkArticleIdExists(article_id);
         const comment = await insertCommentByArticleId(username, body, article_id);
         res.status(201).send({comment});

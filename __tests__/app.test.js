@@ -273,6 +273,7 @@ describe("/api/articles/:article_id/comments", () => {
         return request(app)
         .post("/api/articles/not_a_valid_article_id/comments")
         .send(postedComment)
+        .expect(400)
         .then(({body}) => {
             expect(body.message).toBe('bad request');
         })
@@ -285,6 +286,7 @@ describe("/api/articles/:article_id/comments", () => {
         return request(app)
         .post("/api/articles/20/comments")
         .send(postedComment)
+        .expect(404)
         .then(({body}) => {
             expect(body.message).toBe('article not found');
         })
@@ -297,6 +299,7 @@ describe("/api/articles/:article_id/comments", () => {
         return request(app)
         .post("/api/articles/9/comments")
         .send(postedComment)
+        .expect(404)
         .then(({body}) => {
             expect(body.message).toBe('user not found');
         })
@@ -310,6 +313,20 @@ describe("/api/articles/:article_id/comments", () => {
         return request(app)
         .post("/api/articles/9/comments")
         .send(postedComment)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("POST 400: responds with an error message bad request when no username or body provided", () => {
+        const postedComment = {
+            username: null,
+            body: 0
+           };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(postedComment)
+        .expect(400)
         .then(({body}) => {
             expect(body.message).toBe('bad request');
         })
