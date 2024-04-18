@@ -115,7 +115,7 @@ describe("/api/articles/:article_id", () => {
             expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
         })
     });
-    test("GET 404: responds with error message not found when article_id is a number but does not exist", () => {
+    test("PATCH 404: responds with error message not found when article_id is a number but does not exist", () => {
         const patchedVote = {inc_votes: 2};
         return request(app)
         .patch("/api/articles/109")
@@ -125,7 +125,7 @@ describe("/api/articles/:article_id", () => {
             expect(body.message).toBe('article not found');
         })
     });
-    test("GET 400: responds with error message bad request when article_id is invalid", () => {
+    test("PATCH 400: responds with error message bad request when article_id is invalid", () => {
         const patchedVote = {inc_votes: 2};
         return request(app)
         .patch("/api/articles/not_an_article")
@@ -135,7 +135,7 @@ describe("/api/articles/:article_id", () => {
             expect(body.message).toBe('bad request');
         })
     });
-    test("Patch 400: responds with error message bad request for invalid inc_votes property", () => {
+    test("PATCH 400: responds with error message bad request for invalid inc_votes property", () => {
         const patchedVote = {inc_votes: 'string'}
         return request(app)
         .patch("/api/articles/5")
@@ -145,7 +145,7 @@ describe("/api/articles/:article_id", () => {
             expect(body.message).toBe('bad request');
         })
     });
-    test("POST 400: responds with an error message bad request when the comment object has incorrect or missing keys", () => {
+    test("PATCH 400: responds with an error message bad request when the comment object has incorrect or missing keys", () => {
         const patchedVote = {wrongKey: 2, anotherKey: -5};
         return request(app)
         .patch("/api/articles/5")
