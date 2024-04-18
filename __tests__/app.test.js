@@ -156,6 +156,15 @@ describe("/api/articles/:article_id", () => {
         })
     });
 
+    test("GET 200: FEATURE responds with article object that has correct comment_count property", () => {
+        return request(app)
+        .get("/api/articles/5")
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article.comment_count).toBe(2);
+        })
+    })
 
 })
 
