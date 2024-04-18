@@ -15,20 +15,22 @@ async function selectArticleById(id) {
     }
 }
 
-async function selectArticles(sort_by='created_at') {
+async function selectArticles(sort_by='created_at', topic) {
     const validSortBys = ["created_at"];
+    const values = [];
     if (!validSortBys.includes(sort_by)) {
         return Promise.reject({status: 400, message: "bad request"})}
     let sqlQueryString = '';
     sqlQueryString += `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, CASE WHEN SUM(comments.votes) IS NULL THEN 0 
-    ELSE SUM(comments.votes)::INTEGER END AS votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`
-    sqlQueryString += ` ORDER BY ${sort_by} DESC;`
-    try {
-        const articles = await db.query(sqlQueryString);
-        return articles.rows;
-    } catch(error) {
-        throw error;
+    ELSE SUM(comments.votes)::INTEGER END AS votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`
+
+    if (topic) {
+        sqlQueryString += ` WHERE articles.topic=$1`;
+        values.push(topic)
     }
+    sqlQueryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} DESC;`
+        const articles = await db.query(sqlQueryString, values);
+        return articles.rows;
 }
 
 async function selectCommentsByArticleId(id) {

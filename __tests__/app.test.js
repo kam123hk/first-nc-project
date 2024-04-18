@@ -189,6 +189,20 @@ describe("/api/articles", () => {
             expect(articles).toBeSortedBy("created_at", {descending: true});
         })
     });
+
+    test("GET 200: FEATURE responds with array of articles with the topic value specified in the query", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .expect(({body}) => {
+            const {articles} = body;
+            expect(articles.length).toBe(12);
+            articles.forEach(article => {
+                expect(article.topic).toBe('mitch');
+            })
+        })
+    })
+    
 })
 
 describe("/api/articles/:article_id/comments", () => {

@@ -12,12 +12,12 @@ async function getArticleById(req, res, next) {
 }
 
 async function getArticles(req, res, next) {
-    const {sort_by} = req.query
+    const {sort_by, topic} = req.query
     try {
-        const articles = await selectArticles(sort_by);
+        const articles = await selectArticles(sort_by, topic);
         res.status(200).send({articles})
     } catch(error) {
-        next(error)
+        next()
     }
 }
 
