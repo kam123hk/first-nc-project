@@ -201,8 +201,25 @@ describe("/api/articles", () => {
                 expect(article.topic).toBe('mitch');
             })
         })
+    });
+    test("GET 404: FEATURE responds with error message not found when topic value in query does not exist", () => {
+        return request(app)
+        .get("/api/articles?topic=dogs")
+        .expect(404)
+        .expect(({body}) => {
+            expect(body.message).toBe('topic not found')
+        })
+    });
+    test("GET 200: FEATURE responds with empty array when topic value in query exists but not present in any article", () => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .expect(({body}) => {
+            const {articles} = body
+            expect(articles.length).toBe(0)
+        })
     })
-    
+
 })
 
 describe("/api/articles/:article_id/comments", () => {

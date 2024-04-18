@@ -28,8 +28,9 @@ async function selectArticles(sort_by='created_at', topic) {
         values.push(topic)
     }
     sqlQueryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} DESC;`
-        const articles = await db.query(sqlQueryString, values);
-        return articles.rows;
+
+    const articles = await db.query(sqlQueryString, values);
+    return articles.rows;
 }
 
 async function selectCommentsByArticleId(id) {
@@ -45,7 +46,7 @@ async function selectCommentsByArticleId(id) {
 async function checkArticleIdExists(id) {
     try {
         const article = await db.query(`
-        SELECT * FROM articles WHERE article_id=$1`, [id]);
+        SELECT * FROM articles WHERE article_id=$1;`, [id]);
         if (article.rows.length === 0) {
             return Promise.reject({status: 404, message: 'article not found'})
         }
