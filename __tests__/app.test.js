@@ -162,7 +162,7 @@ describe("/api/articles/:article_id", () => {
 describe("/api/articles", () => {
     test("GET 200: responds with an array of all articles without the body property", () => {
         return request(app)
-        .get("/api/articles/")
+        .get("/api/articles")
         .expect(200)
         .then(({body}) => {
             const {articles} = body;

@@ -21,8 +21,7 @@ async function selectArticles(sort_by='created_at', topic) {
     if (!validSortBys.includes(sort_by)) {
         return Promise.reject({status: 400, message: "bad request"})}
     let sqlQueryString = '';
-    sqlQueryString += `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, CASE WHEN SUM(comments.votes) IS NULL THEN 0 
-    ELSE SUM(comments.votes)::INTEGER END AS votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`
+    sqlQueryString += `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,articles.votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`
 
     if (topic) {
         sqlQueryString += ` WHERE articles.topic=$1`;

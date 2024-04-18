@@ -17,7 +17,7 @@ async function getArticles(req, res, next) {
         const articles = await selectArticles(sort_by, topic);
         res.status(200).send({articles})
     } catch(error) {
-        next()
+        next(error)
     }
 }
 
