@@ -1,5 +1,5 @@
 const {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId, updateArticleById} = require('../models/articles.model');
-
+const {checkTopicExists} = require('../models/topics.model');
 
 async function getArticleById(req, res, next) {
     const {article_id} = req.params;
@@ -12,9 +12,10 @@ async function getArticleById(req, res, next) {
 }
 
 async function getArticles(req, res, next) {
-    const {sort_by} = req.query
+    const {sort_by, topic} = req.query
     try {
-        const articles = await selectArticles(sort_by);
+        if (topic) await checkTopicExists(topic);
+        const articles = await selectArticles(sort_by, topic);
         res.status(200).send({articles})
     } catch(error) {
         next(error)

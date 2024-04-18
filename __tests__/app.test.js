@@ -162,7 +162,7 @@ describe("/api/articles/:article_id", () => {
 describe("/api/articles", () => {
     test("GET 200: responds with an array of all articles without the body property", () => {
         return request(app)
-        .get("/api/articles/")
+        .get("/api/articles")
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -189,6 +189,37 @@ describe("/api/articles", () => {
             expect(articles).toBeSortedBy("created_at", {descending: true});
         })
     });
+
+    test("GET 200: FEATURE responds with array of articles with the topic value specified in the query", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .expect(({body}) => {
+            const {articles} = body;
+            expect(articles.length).toBe(12);
+            articles.forEach(article => {
+                expect(article.topic).toBe('mitch');
+            })
+        })
+    });
+    test("GET 404: FEATURE responds with error message not found when topic value in query does not exist", () => {
+        return request(app)
+        .get("/api/articles?topic=dogs")
+        .expect(404)
+        .expect(({body}) => {
+            expect(body.message).toBe('topic not found')
+        })
+    });
+    test("GET 200: FEATURE responds with empty array when topic value in query exists but not present in any article", () => {
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .expect(({body}) => {
+            const {articles} = body
+            expect(articles.length).toBe(0)
+        })
+    })
+
 })
 
 describe("/api/articles/:article_id/comments", () => {
