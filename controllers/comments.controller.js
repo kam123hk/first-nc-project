@@ -19,7 +19,7 @@ async function patchCommentById(req, res, next) {
         const comment = await updateCommentById(inc_votes, comment_id);
         res.status(201).send({comment});
     } catch (error) {
-        
+        next(error)
     }
 }
 

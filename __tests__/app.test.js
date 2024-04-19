@@ -464,7 +464,48 @@ describe("/api/comments/:comment_id", () => {
             expect(comment.created_at).toBe('2020-04-06T12:17:00.000Z');
             expect(comment.votes).toBe(28);
         })
-    })
+    });
+    test("PATCH 404: responds with error message not found when comment id is valid but not in database", () => {
+        const patchedVote = {inc_votes: 12};
+        return request(app)
+        .patch("/api/comments/0")
+        .send(patchedVote)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.message).toBe('comment not found');
+        })
+    });
+    test("PATCH 400: responds with error message bad request when comment id is invalid", () => {
+        const patchedVote = {inc_votes: 12};
+        return request(app)
+        .patch("/api/comments/invalid_comment_id")
+        .send(patchedVote)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("PATCH 400: responds with error message bad request when patched vote object has invalid property", () => {
+        const patchedVote = {inc_votes: 'invalid_property'};
+        return request(app)
+        .patch("/api/comments/1")
+        .send(patchedVote)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+    test("PATCH 400: responds with error message bad request when patched vote object has invalid key", () => {
+        const patchedVote = {invalid_key: 12};
+        return request(app)
+        .patch("/api/comments/1")
+        .send(patchedVote)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe('bad request');
+        })
+    });
+
 });
 
 
