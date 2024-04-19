@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "serves an array of all articles sorted by date descending as dafault",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -112,7 +112,7 @@
   }
   ,
   "GET /api/users": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all users",
     "queries": [],
     "exampleResponse": [
       {
@@ -122,5 +122,16 @@
         "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
     }
   ]
+  },
+  "GET /api/users/:username": {
+    "description": "serves the user object with given username",
+    "queries": [],
+    "exampleResponse":
+      {
+      "username": "lurker",
+      "name": "do_nothing",
+      "avatar_url":
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
   }
 }
