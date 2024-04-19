@@ -229,6 +229,58 @@ describe("/api/articles", () => {
         })
     })
 
+    test("GET 200: FEATURE: responds with an array of articles sorted by title in descending order", () => {
+        return request(app)
+        .get('/api/articles?sort_by=title')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("title", {descending: true});
+        })
+    });
+    test("GET 200: FEATURE: responds with an array of articles sorted by any valid column in descending order", () => {
+        return request(app)
+        .get('/api/articles?sort_by=comment_count')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("comment_count", {descending: true});
+        })
+    });
+    test("GET 200: FEATURE responds with an array of articles sorted by date in ascending order", () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("created_at");
+        })
+    });
+    test("GET 200: FEATURE responds with an array of articles sorted any valid column in ascending order", () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes&order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toBeSortedBy("votes");
+        })
+    });
+    test("GET 400: FEATURE responds with error message bad request when sorted by an invalid column", () => {
+        return request(app)
+        .get('/api/articles?sort_by=invalid_column')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("bad request");
+        })
+    });
+    test("GET 400: FEATURE responds with error message bad request when sorted by an invalid order query", () => {
+        return request(app)
+        .get('/api/articles?sort_by=article_img_url&order=invalid_order')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.message).toBe("bad request");
+        })
+    })
 })
 
 describe("/api/articles/:article_id/comments", () => {
