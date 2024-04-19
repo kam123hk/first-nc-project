@@ -12,10 +12,10 @@ async function getArticleById(req, res, next) {
 }
 
 async function getArticles(req, res, next) {
-    const {sort_by, topic} = req.query
+    const {sort_by, topic, order} = req.query
     try {
         if (topic) await checkTopicExists(topic);
-        const articles = await selectArticles(sort_by, topic);
+        const articles = await selectArticles(sort_by, topic, order);
         res.status(200).send({articles})
     } catch(error) {
         next(error)

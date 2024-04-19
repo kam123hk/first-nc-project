@@ -11,10 +11,11 @@ async function selectArticleById(id) {
     return article.rows[0];
 }
 
-async function selectArticles(sort_by='created_at', topic) {
-    const validSortBys = ["created_at"];
+async function selectArticles(sort_by='created_at', topic, order='desc') {
+    const validSortBys = ["created_at", "title", "author", "article_id", "topic", "votes", "article_img_url", "comment_count"];
+    const validOrders = ['asc', 'desc'];
     const values = [];
-    if (!validSortBys.includes(sort_by)) {
+    if (!validSortBys.includes(sort_by) || !validOrders.includes(order)) {
         return Promise.reject({status: 400, message: "bad request"})}
     let sqlQueryString = '';
     sqlQueryString += `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at,articles.votes, articles.article_img_url, COUNT(comments.article_id)::INTEGER AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`
@@ -23,7 +24,7 @@ async function selectArticles(sort_by='created_at', topic) {
         sqlQueryString += ` WHERE articles.topic=$1`;
         values.push(topic)
     }
-    sqlQueryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} DESC;`
+    sqlQueryString += ` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
 
     const articles = await db.query(sqlQueryString, values);
     return articles.rows;
