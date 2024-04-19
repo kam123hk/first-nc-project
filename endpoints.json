@@ -93,7 +93,7 @@
       "inc_votes": 2
      },
     "exampleResponse": {
-      "comment": 
+      "article": 
       {
         "title": "Seafood substitutions are increasing",
         "topic": "cooking",
@@ -132,6 +132,23 @@
       "name": "do_nothing",
       "avatar_url":
         "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves the updated comment as an object with updated votes property",
+    "queries": [],
+    "exampleRequest": {
+      "inc_votes": -2
+     },
+    "exampleResponse": {
+      "comment": 
+      {
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "votes": 14,
+        "author": "butter_bridge",
+        "article_id": 9,
+        "created_at": 1586179020000
+      }
     }
   }
 }
