@@ -447,6 +447,23 @@ describe("/api/comments/:comment_id", () => {
         .then(({body}) => {
             expect(body.message).toBe('bad request')
         })
+    });
+
+    test("PATCH 201: responds with comment object with updated votes", () => {
+        const patchedVote = {inc_votes: 12};
+        return request(app)
+        .patch("/api/comments/1")
+        .send(patchedVote)
+        .expect(201)
+        .then(({body}) => {
+            const {comment} = body;
+            expect(comment.comment_id).toBe(1)
+            expect(comment.body).toBe("Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!");
+            expect(comment.author).toBe('butter_bridge')
+            expect(comment.article_id).toBe(9);
+            expect(comment.created_at).toBe('2020-04-06T12:17:00.000Z');
+            expect(comment.votes).toBe(28);
+        })
     })
 });
 
