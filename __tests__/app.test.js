@@ -280,7 +280,53 @@ describe("/api/articles", () => {
         .then(({body}) => {
             expect(body.message).toBe("bad request");
         })
+    });
+
+    test("POST 201: responds with the posted article object with the correct properties", () => {
+        const postArticle = {
+            title: "Cats musical to feature rapping cat",            
+            topic: "cats",
+            author: 'lurker',
+            body: "Composer Andrew Lloyd Webber said the character of Rum Tum Tugger would become 'a street cat' in the show",
+            created_at: 1404740880000,
+            article_img_url: "https://ichef.bbci.co.uk/news/976/mcs/media/images/75881000/jpg/_75881969_cats_getty.jpg"
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(postArticle)
+        .expect(201)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article.author).toBe('lurker');
+            expect(article.title).toBe("Cats musical to feature rapping cat");
+            expect(article.article_id).toBe(14);
+            expect(article.topic).toBe('cats');
+            expect(article.body).toBe("Composer Andrew Lloyd Webber said the character of Rum Tum Tugger would become 'a street cat' in the show");
+            expect(article.created_at).toBe('2014-07-07T13:48:00.000Z');
+            expect(article.votes).toBe(0);
+            expect(article.article_img_url).toBe("https://ichef.bbci.co.uk/news/976/mcs/media/images/75881000/jpg/_75881969_cats_getty.jpg");
+            expect(article.comment_count).toBe(0);
+        })
+    });
+    test("POST 201: responds with an article object with default article_img_url when no such property is given in the request", () => {
+        const postArticle = {
+            title: "Cats musical to feature rapping cat",            
+            topic: "cats",
+            author: 'lurker',
+            body: "Composer Andrew Lloyd Webber said the character of Rum Tum Tugger would become 'a street cat' in the show",
+            created_at: 1404740880000,
+            article_img_url: null
+        }
+        return request(app)
+        .post("/api/articles")
+        .send(postArticle)
+        .expect(201)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article.article_img_url).toBe("https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700");
+        })
     })
+
 })
 
 describe("/api/articles/:article_id/comments", () => {
