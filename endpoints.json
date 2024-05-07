@@ -150,5 +150,31 @@
         "created_at": 1586179020000
       }
     }
+  },
+  "POST /api/articles": {
+    "description": "serves the posted article as an object with article properties",
+    "queries": [],
+    "exampleRequest": {
+      "title": "Cats musical to feature rapping cat",            
+      "topic": "cats",
+      "author": "lurker",
+      "body": "Composer Andrew Lloyd Webber said the character of Rum Tum Tugger would become 'a street cat' in the show",
+      "created_at": 1404740880000,
+      "article_img_url": "https://ichef.bbci.co.uk/news/976/mcs/media/images/75881000/jpg/_75881969_cats_getty.jpg"
+  },
+    "exampleResponse": {
+      "article": 
+      {
+        "article_id": 14,
+        "title": "Cats musical to feature rapping cat",            
+        "topic": "cats",
+        "author": "lurker",
+        "body": "Composer Andrew Lloyd Webber said the character of Rum Tum Tugger would become 'a street cat' in the show",
+        "votes": 0,
+        "comment_count": 0,
+        "created_at": "2014-07-07T13:48:00.000Z",
+        "article_img_url": "https://ichef.bbci.co.uk/news/976/mcs/media/images/75881000/jpg/_75881969_cats_getty.jpg"
+    }
+    }
   }
 }
