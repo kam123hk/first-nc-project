@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require("pg-format")
 
 
 async function selectArticleById(id) {
@@ -81,5 +82,19 @@ async function updateArticleById(votes, id) {
     }
 }
 
+async function insertArticle(title, topic, author, body, created_at, article_img_url) {
+    const newCreated_at = new Date(created_at)
+    let newArticle_img_url = article_img_url;
+    if (article_img_url === undefined || article_img_url === null) {
+        newArticle_img_url = 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
+    }
 
-module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId, updateArticleById};
+    const article = await db.query(`
+    INSERT INTO articles (title, topic, author, body, created_at, article_img_url) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`, [title, topic, author, body, newCreated_at, newArticle_img_url])
+    
+    const article_id = article.rows[0].article_id;
+    return article_id;
+}
+
+
+module.exports = {selectArticleById, selectArticles, selectCommentsByArticleId, checkArticleIdExists, insertCommentByArticleId, updateArticleById, insertArticle};
